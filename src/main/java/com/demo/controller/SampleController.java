@@ -8,6 +8,7 @@ public class SampleController {
 
     @GetMapping("/hello")
     public String sample() {
+    	
     	System.out.println("Hello Call!!");
         return "Hello Sample";
     }
