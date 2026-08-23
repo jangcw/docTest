@@ -22,7 +22,7 @@ spec:
           image: spring-app:latest
           ports:
             - containerPort: 8080
-
+          imagePullPolicy: IfNotPresent
           resources:
             requests:
               cpu: "100m"
