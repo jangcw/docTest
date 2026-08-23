@@ -23,7 +23,7 @@ spec:
         app: spring-app
 
     spec:
-      terminationGracePeriodSeconds: 30 # pods 종료 시간 설정
+      terminationGracePeriodSeconds: 30
       containers:
         - name: spring-app
           image: spring-app:latest
