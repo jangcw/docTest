@@ -22,7 +22,7 @@ public class SampleController {
     public String sample(@Parameter(description = "조회할 게시글 ID",example = "1",required = true) @RequestParam("userid") String userid) {
     	
     	System.out.println("Hello Call!!");
-        return "Hello Sample";
+        return "Hello World!";
     }
      
     @Operation(summary = "게시글 조회", description = "게시글 조회 API")
