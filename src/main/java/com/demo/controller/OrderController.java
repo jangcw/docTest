@@ -10,9 +10,11 @@ import com.demo.dto.OrderRequest;
 import com.demo.service.OrderProducer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import tools.jackson.databind.ObjectMapper;
 
+@Tag(name = "kafka 메시지 처리", description = "메시지 관련 API")
 @RestController
 @RequestMapping("/kafka")
 @RequiredArgsConstructor

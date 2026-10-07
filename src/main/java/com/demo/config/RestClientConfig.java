@@ -7,12 +7,14 @@ import org.springframework.web.client.RestClient;
 
 @Configuration
 public class RestClientConfig {
-/*
+
+    @Value("${api.server.url}")
+    private String apiServerUrl;
+
     @Bean
-    public RestClient restClient(@Value("${my.api.url}") String apiUrl) {
+    public RestClient restClient() {
         return RestClient.builder()
-                .baseUrl(apiUrl)
+                .baseUrl(apiServerUrl)
                 .build();
     }
-*/    
 }

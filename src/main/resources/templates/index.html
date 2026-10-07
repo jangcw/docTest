@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>OAuth2 Login</title>
+    <style>
+        .container { width: 400px; margin: 50px auto; text-align: center; font-family: Arial; }
+        .btn-group a { display: block; margin: 10px 0; padding: 12px; text-decoration: none; color: white; border-radius: 4px; font-weight: bold; }
+        .google { background-color: #ea4335; }
+        .kakao { background-color: #fee500; color: #000 !important; }
+        .naver { background-color: #03cf5d; }
+        .alert { background-color: #d4edda; color: #155724; padding: 10px; margin-bottom: 15px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>로그인 페이지</h2>
+
+	<div th:if="${param.registered != null and param.registered[0] == 'true'}" class="alert">
+        회원가입이 완료되었습니다! 소셜 로그인을 다시 진행해 주세요.
+    </div>
+
+    <hr>
+    <p>아래 3가지 소셜 인증을 통해 로그인하세요</p>
+
+    <div class="btn-group">
+        <a href="http://localhost:8080/oauth2/authorization/google" class="google">Google 계정으로 로그인</a>
+        <a href="http://localhost:8080/oauth2/authorization/kakao" class="kakao">Kakao 계정으로 로그인</a>
+        <a href="http://localhost:8080/oauth2/authorization/naver" class="naver">Naver 계정으로 로그인</a>
+    </div>
+</div>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+debugger;
+        const urlParams = new URLSearchParams(window.location.search);
+        const registered = urlParams.get('registered');
+
+        // 미가입자인 경우 Confirm 창 표시
+        if (registered === 'false') {
+            const confirmRegister = confirm("사용자를 찾을 수 없습니다. 회원가입을 하시겠습니까?");
+            
+            if (confirmRegister) {
+                const email = urlParams.get('email') || '';
+                const name = urlParams.get('name') || '';
+                const provider = urlParams.get('provider') || '';
+                const providerId = urlParams.get('providerId') || '';
+
+                // 회원가입 페이지로 파라미터 전달하며 이동
+                const registerUrl = `/login/register.do?email=${email}&name=${name}&provider=${provider}&providerId=${providerId}`;
+                window.location.href = registerUrl;
+            }
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-package com.demo.controller;
+package com.demo.oaush2api.controller;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,14 +16,13 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.demo.config.ApiCode;
 import com.demo.config.ApiMessage;
-import com.demo.dto.PostListResponseDto;
-import com.demo.dto.Userlist;
-import com.demo.service.UserlistService;
+import com.demo.oaush2api.dto.User;
+import com.demo.oaush2api.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -35,56 +34,20 @@ import lombok.AllArgsConstructor;
 @Tag(name = "사용자 관리", description = "사용자 관련 API")
 @RestController
 @AllArgsConstructor
-public class SampleController {
+@RequestMapping("/api/v1/user")
+public class UserRestController {
 
-	private final UserlistService userlistService;
+	private final UserService userService;
 	
-    @GetMapping("/")
-    public String index() {  	
-        return "Hello World!";
-    }
-    
-    @Operation(summary = "헬로 API", description = "간단한 테스트용 API")
-    @ApiResponse(responseCode = "200", description = "정상 응답")
-    @GetMapping("/hello")
-    public String sample(@Parameter(description = "조회할 게시글 ID",example = "1",required = true) @RequestParam("userid") String userid) {
-    	
-    	System.out.println("Hello Call!!");
-        return "Hello World!";
-    }
-     
-    @Operation(summary = "게시글 조회", description = "게시글 조회 API")
-    @ApiResponses({
-        @ApiResponse(responseCode = "200",description = "조회 성공"),
-        @ApiResponse(responseCode = "404",description = "해당 게시글을 찾을 수 없음")
-    })
-    @GetMapping("/posts/{id}")
-    public ResponseEntity<PostListResponseDto> findPost(@Parameter(description = "조회할 게시글 ID",example = "1",required = true)  @PathVariable("id") Long id){ 
-        
-    	PostListResponseDto rt = new PostListResponseDto();
-    	rt.setTitle(""+id);
-    	
-        return ResponseEntity.ok().body(rt);
-    }
-
-    @Operation(summary = "사용자 전체 리스트", description = "사용자 전체 리스트 API")
-    @GetMapping("/userlist")
-    public ResponseEntity<ApiMessage<?>> userlist(){ 
-        
-    	List<Userlist> userlist = userlistService.getUsers();
-
- 	    return ResponseEntity.ok().body(ApiMessage.success(userlist));
-    }
-    
     @Operation(summary = "사용자 정보", description = "사용자정보 API")
     @ApiResponse(responseCode = "SUCCESS", description = "정상 응답")
-    @GetMapping("/userlist/{wcode}")
-    public ResponseEntity<ApiMessage<?>> userInfo(@Parameter(description = "사용자ID",example = "1",required = true) @PathVariable("wcode") String wcode) {
+    @GetMapping("/{userId}")
+    public ResponseEntity<ApiMessage<?>> userInfo(@Parameter(description = "사용자ID",example = "1",required = true) @PathVariable("userId") String userId) {
     	
-    	Optional<Userlist> userlist = userlistService.getUser(wcode);
+    	Optional<User> User = userService.getUser(userId);
     	
-    	if (!userlist.isEmpty()) {
-    		return ResponseEntity.ok().body(userlist
+    	if (!User.isEmpty()) {
+    		return ResponseEntity.ok().body(User
       			  .map(ApiMessage::success)
       			  .get());
     		
@@ -116,7 +79,7 @@ public class SampleController {
     @PostMapping("/searchUsers")
     public ResponseEntity<ApiMessage<?>> searchUsers(
     		@ParameterObject
-    		@ModelAttribute Userlist condition,
+    		@ModelAttribute User condition,
     		@ParameterObject
             @PageableDefault(
                     page = 0,
@@ -125,7 +88,7 @@ public class SampleController {
                     direction = Sort.Direction.DESC
             ) Pageable pageable) {
 
-        ApiMessage<?> result = userlistService.searchUsers(condition, pageable);
+        ApiMessage<?> result = userService.searchUsers(condition, pageable);
 
         return ResponseEntity.ok().body(result);
     }
@@ -135,12 +98,12 @@ public class SampleController {
         @ApiResponse(responseCode = "200", description = "저장 성공"),
         @ApiResponse(responseCode = "500", description = "저장 실패")
     })
-    @PutMapping("/userlist/save")
+    @PutMapping("/save")
     public ResponseEntity<ApiMessage<?>> userSave(
     		@ParameterObject
-    		@ModelAttribute Userlist userlist) {
+    		@ModelAttribute User User) {
         
-		userlistService.userSave(userlist);
+		userService.userSave(User);
         return ResponseEntity.ok(
                 ApiMessage.success("사용자를 저장하였습니다.")
         );
@@ -151,12 +114,12 @@ public class SampleController {
         @ApiResponse(responseCode = "200", description = "저장 성공"),
         @ApiResponse(responseCode = "500", description = "저장 실패")
     })
-    @PatchMapping("/userlist/update")
+    @PatchMapping("/update")
     public ResponseEntity<ApiMessage<?>> userUpdate(
     		@ParameterObject
-    		@ModelAttribute Userlist userlist) {
+    		@ModelAttribute User User) {
         
-		userlistService.userUpdate(userlist);
+		userService.userUpdate(User);
         return ResponseEntity.ok(
                 ApiMessage.success("사용자를 수정하였습니다.")
         );
@@ -167,15 +130,25 @@ public class SampleController {
         @ApiResponse(responseCode = "200", description = "삭제 성공"),
         @ApiResponse(responseCode = "500", description = "삭제 실패")
     })
-    @DeleteMapping("/userlist/delete/{wcode}")
-    public ResponseEntity<ApiMessage<?>> userDelete(@Parameter(description = "사용자ID",example = "1",required = true) @PathVariable("wcode") String wcode) {
+    @DeleteMapping("/delete/{wcode}")
+    public ResponseEntity<ApiMessage<?>> userDelete(@Parameter(description = "사용자ID",example = "1",required = true) @PathVariable("userId") String userId) {
 
-    	userlistService.userDelete(wcode);
+    	userService.userDelete(userId);
         
     	return ResponseEntity.ok(
                 ApiMessage.success("사용자를 삭제하였습니다.")
         );
     }
 
+    @DeleteMapping("/userList")
+    public ResponseEntity<ApiMessage<?>> userList() {
+
+    	List<User> userList = userService.getUsers();
+        
+    	return ResponseEntity.ok(
+                ApiMessage.success(userList)
+        );
+    }
+    
     
 }

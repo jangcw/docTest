@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>전체 사용자 리스트</title>
+    <style>
+        .container { width: 600px; margin: 50px auto; font-family: Arial; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>인증 성공 - 사용자 리스트</h2>
+    <p>REST API를 통해 JWT 인증 후 조회된 전체 사용자 목록입니다.</p>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>이메일</th>
+            <th>이름</th>
+            <th>가입 Provider</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.uerId}">1</td>
+            <td th:text="${user.email}">user@gmail.com</td>
+            <td th:text="${user.userName}">홍길동</td>
+            <td th:text="${user.provider}">google</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
